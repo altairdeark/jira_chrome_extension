@@ -28,7 +28,13 @@ function displayFeedListResults(list) {
   feedResultDiv.hidden = false;
 }
 
-// utility 
+function displayError(errorMessage) {
+  document.getElementById('status').innerHTML = 'ERROR. ' + errorMessage;
+  document.getElementById('status').hidden = false;
+  document.getElementById('query-result').innerHTML = '';
+}
+
+// Utility 
 function domify(str) {
   var dom = (new DOMParser()).parseFromString('<!doctype html><body>' + str,'text/html');
   return dom.body.textContent;
@@ -53,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // query click handler
     document.getElementById("query").onclick = function() {
       var daysPast = document.getElementById("daysPast").value;
-      if(daysPast == undefined || daysPast == "") return;
+      if(daysPast == undefined) return;
 
       var searchFields = ['id', 'status', 'key', 'assignee', 'summary'];
       var JQLQuery = buildJQLQuery();
@@ -78,15 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         displayFeedListResults(list);
       }, function(errorMessage) {
-          document.getElementById('status').innerHTML = 'ERROR. ' + errorMessage;
-          document.getElementById('status').hidden = false;
+        displayError(errorMessage);
       });
     };
 
     // activity feed click handler
     document.getElementById("feed").onclick = function() {   
       var user = document.getElementById("user").value;
-      if(user == undefined || user == "") return;
+      if(user == undefined) return;
 
       // get the xml feed
       jiraClient.activityStreams.get(user).then(function([url, xmlDoc]) {
@@ -108,13 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         displayFeedListResults(list);
       }, function(errorMessage) {
-        document.getElementById('status').innerHTML = 'ERROR. ' + errorMessage;
-        document.getElementById('status').hidden = false;
+        displayError(errorMessage)
       });    
     };        
 
   }).catch(function(errorMessage) {
-      document.getElementById('status').innerHTML = 'ERROR. ' + errorMessage;
-      document.getElementById('status').hidden = false;
+    displayError(errorMessage)
   });   
 });

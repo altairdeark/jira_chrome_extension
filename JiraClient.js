@@ -18,10 +18,6 @@ var JiraClient = function(options) {
   };
 
   var activityStreams = {
-    url: function () {
-      return _buildStreamUrl('activity');
-    },
-
     get: function (username) {
       var params = {
         streams: `user+IS+${username}`,
@@ -30,13 +26,10 @@ var JiraClient = function(options) {
       var promise = _makeRequest(_buildStreamUrl('activity', params));
       return promise;
     }
+    // Add additional put, post, delete functionality here
   };
   
   var projects = {
-    url: function () {
-      return _buildRestUrl('project');
-    },
-
     get: async function (projectName) {
       var promise = _makeRequest(_buildRestUrl('project', projectName), "json");
       return await promise;
@@ -44,10 +37,6 @@ var JiraClient = function(options) {
   };
   
   var search = {
-    url: function () {
-      return _buildRestUrl('search');
-    },
-
     getWithJQL: function (query, fields) {
       var params = {
         jql: query,
