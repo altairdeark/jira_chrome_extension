@@ -74,21 +74,33 @@ function buildJQL(callback) {
   callback(fullCallbackUrl);
 }
 function createHTMLElementResult(response){
+  var list = document.createElement('ul');
+  var issues = response.issues;
 
-// 
-// Create HTML output to display the search results.
-// results.json in the "json_results" folder contains a sample of the API response
-// hint: you may run the application as well if you fix the bug. 
-// 
-
-  return '<p>There may be results, but you must read the response and display them.</p>';
-  
+  for (var i = 0; i < issues.length; i++) {
+    var a = document.createElement('a');
+    a.innerHTML = issues[i].key;
+    a.href = issues[i].self;
+    var html = htmlEncode(a.outerHTML) + " -- " + issues[i].fields.summary;
+    var item = document.createElement('li');
+    item.innerHTML = domify(html);
+    list.appendChild(item);
+  }
+  return list.innerHTML;
 }
 
 // utility 
 function domify(str){
   var dom = (new DOMParser()).parseFromString('<!doctype html><body>' + str,'text/html');
   return dom.body.textContent;
+}
+
+function htmlEncode(str)
+{
+    var div = document.createElement('div');
+    var text = document.createTextNode(str);
+    div.appendChild(text);
+    return div.innerHTML;
 }
 
 async function checkProjectExists(){
